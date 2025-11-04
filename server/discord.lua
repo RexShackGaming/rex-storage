@@ -1,3 +1,4 @@
+lib.locale()
 ---------------------------------------------
 -- Discord Webhook Utility
 -- Handles all Discord webhook logging
@@ -17,7 +18,7 @@ local function SendWebhook(webhook, title, description, color, fields)
             ['color'] = color or Config.Discord.colors.access,
             ['fields'] = fields or {},
             ['footer'] = {
-                ['text'] = 'REX Storage System • ' .. os.date('%Y-%m-%d %H:%M:%S'),
+                ['text'] = locale('discord_footer', os.date('%Y-%m-%d %H:%M:%S')),
             },
         }
     }
@@ -44,17 +45,17 @@ function DiscordLog_StorageCreated(playerName, citizenid, steamid, storageId, co
     if not Config.Discord.logEvents.storageCreate then return end
 
     local fields = {
-        { name = '👤 Player', value = playerName, inline = true },
-        { name = '🆔 Citizen ID', value = citizenid, inline = true },
-        { name = '💻 Steam ID', value = steamid or 'N/A', inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false },
-        { name = '📍 Location', value = string.format('X: %.2f, Y: %.2f, Z: %.2f', coords.x, coords.y, coords.z), inline = false }
+        { name = locale('discord_field_player'), value = playerName, inline = true },
+        { name = locale('discord_field_citizenid'), value = citizenid, inline = true },
+        { name = locale('discord_field_steamid'), value = steamid or locale('discord_na'), inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false },
+        { name = locale('discord_field_location'), value = string.format('X: %.2f, Y: %.2f, Z: %.2f', coords.x, coords.y, coords.z), inline = false }
     }
 
     SendWebhook(
         Config.Discord.webhook,
-        '🟢 Storage Created',
-        'A player has created a new storage box',
+        locale('discord_storage_created_title'),
+        locale('discord_storage_created_desc'),
         Config.Discord.colors.create,
         fields
     )
@@ -68,17 +69,17 @@ function DiscordLog_StorageDestroyed(playerName, citizenid, steamid, storageId, 
     if not Config.Discord.logEvents.storageDestroy then return end
 
     local fields = {
-        { name = '👤 Player', value = playerName, inline = true },
-        { name = '🆔 Citizen ID', value = citizenid, inline = true },
-        { name = '💻 Steam ID', value = steamid or 'N/A', inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false },
-        { name = '📍 Location', value = string.format('X: %.2f, Y: %.2f, Z: %.2f', coords.x, coords.y, coords.z), inline = false }
+        { name = locale('discord_field_player'), value = playerName, inline = true },
+        { name = locale('discord_field_citizenid'), value = citizenid, inline = true },
+        { name = locale('discord_field_steamid'), value = steamid or locale('discord_na'), inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false },
+        { name = locale('discord_field_location'), value = string.format('X: %.2f, Y: %.2f, Z: %.2f', coords.x, coords.y, coords.z), inline = false }
     }
 
     SendWebhook(
         Config.Discord.webhook,
-        '🔴 Storage Destroyed',
-        'A player has destroyed their storage box',
+        locale('discord_storage_destroyed_title'),
+        locale('discord_storage_destroyed_desc'),
         Config.Discord.colors.destroy,
         fields
     )
@@ -91,23 +92,23 @@ function DiscordLog_StorageAccessed(playerName, citizenid, steamid, storageId, o
     if not Config or not Config.Discord then return end
     if not Config.Discord.logEvents.storageAccess then return end
 
-    local accessType = isGuest and '(Guest Access)' or '(Owner)'
+    local accessType = isGuest and locale('discord_access_type_guest') or locale('discord_access_type_owner')
     local fields = {
-        { name = '👤 Player', value = playerName, inline = true },
-        { name = '🆔 Citizen ID', value = citizenid, inline = true },
-        { name = '💻 Steam ID', value = steamid or 'N/A', inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false },
-        { name = '👥 Access Type', value = accessType, inline = true }
+        { name = locale('discord_field_player'), value = playerName, inline = true },
+        { name = locale('discord_field_citizenid'), value = citizenid, inline = true },
+        { name = locale('discord_field_steamid'), value = steamid or locale('discord_na'), inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false },
+        { name = locale('discord_field_access_type'), value = accessType, inline = true }
     }
 
     if isGuest and ownerName then
-        table.insert(fields, { name = '🏠 Storage Owner', value = ownerName, inline = true })
+        table.insert(fields, { name = locale('discord_field_storage_owner'), value = ownerName, inline = true })
     end
 
     SendWebhook(
         Config.Discord.webhook,
-        '🔵 Storage Accessed',
-        'A player has opened a storage box',
+        locale('discord_storage_accessed_title'),
+        locale('discord_storage_accessed_desc'),
         Config.Discord.colors.access,
         fields
     )
@@ -121,17 +122,17 @@ function DiscordLog_GuestAdded(ownerName, ownerCitizenid, guestName, guestCitize
     if not Config.Discord.logEvents.guestAdd then return end
 
     local fields = {
-        { name = '🏠 Owner', value = ownerName, inline = true },
-        { name = '🆔 Owner ID', value = ownerCitizenid, inline = true },
-        { name = '👤 Guest Added', value = guestName, inline = true },
-        { name = '🆔 Guest ID', value = guestCitizenid, inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false }
+        { name = locale('discord_field_owner'), value = ownerName, inline = true },
+        { name = locale('discord_field_owner_id'), value = ownerCitizenid, inline = true },
+        { name = locale('discord_field_guest_added'), value = guestName, inline = true },
+        { name = locale('discord_field_guest_id'), value = guestCitizenid, inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false }
     }
 
     SendWebhook(
         Config.Discord.webhook,
-        '🟣 Guest Added',
-        'A player has been granted access to a storage box',
+        locale('discord_guest_added_title'),
+        locale('discord_guest_added_desc'),
         Config.Discord.colors.guest,
         fields
     )
@@ -145,17 +146,17 @@ function DiscordLog_GuestRemoved(ownerName, ownerCitizenid, guestName, guestCiti
     if not Config.Discord.logEvents.guestRemove then return end
 
     local fields = {
-        { name = '🏠 Owner', value = ownerName, inline = true },
-        { name = '🆔 Owner ID', value = ownerCitizenid, inline = true },
-        { name = '👤 Guest Removed', value = guestName, inline = true },
-        { name = '🆔 Guest ID', value = guestCitizenid, inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false }
+        { name = locale('discord_field_owner'), value = ownerName, inline = true },
+        { name = locale('discord_field_owner_id'), value = ownerCitizenid, inline = true },
+        { name = locale('discord_field_guest_removed'), value = guestName, inline = true },
+        { name = locale('discord_field_guest_id'), value = guestCitizenid, inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false }
     }
 
     SendWebhook(
         Config.Discord.webhook,
-        '🟠 Guest Removed',
-        'A player has been removed from storage access',
+        locale('discord_guest_removed_title'),
+        locale('discord_guest_removed_desc'),
         Config.Discord.colors.guest,
         fields
     )
@@ -169,17 +170,17 @@ function DiscordLog_AdminDelete(adminName, adminCitizenid, adminSteamid, ownerCi
     if not Config.Discord.logEvents.adminDelete then return end
 
     local fields = {
-        { name = '⚠️ Admin', value = adminName, inline = true },
-        { name = '🆔 Admin ID', value = adminCitizenid, inline = true },
-        { name = '💻 Steam ID', value = adminSteamid or 'N/A', inline = true },
-        { name = '🏠 Storage Owner ID', value = ownerCitizenid, inline = true },
-        { name = '📦 Storage ID', value = storageId, inline = false }
+        { name = locale('discord_field_admin'), value = adminName, inline = true },
+        { name = locale('discord_field_admin_id'), value = adminCitizenid, inline = true },
+        { name = locale('discord_field_steamid'), value = adminSteamid or locale('discord_na'), inline = true },
+        { name = locale('discord_field_storage_owner_id'), value = ownerCitizenid, inline = true },
+        { name = locale('discord_field_storageid'), value = storageId, inline = false }
     }
 
     SendWebhook(
         Config.Discord.webhook,
-        '🟠 Admin Storage Delete',
-        '⚠️ An administrator has deleted a storage box',
+        locale('discord_admin_delete_title'),
+        locale('discord_admin_delete_desc'),
         Config.Discord.colors.admin,
         fields
     )

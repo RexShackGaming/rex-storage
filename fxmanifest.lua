@@ -7,10 +7,7 @@ version '2.0.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
-    '@rsg-core/shared/locale.lua',
-    'locales/en.lua',
-    'locales/*.lua',
-    'config.lua',
+    'shared/config.lua',
 }
 
 client_scripts {
@@ -27,6 +24,10 @@ server_scripts {
 dependencies {
     'rsg-core',
     'ox_lib',
+}
+
+files {
+  'locales/*.json'
 }
 
 lua54 'yes'

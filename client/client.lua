@@ -4,6 +4,7 @@ local isBusy = false
 local fx_group = "scr_dm_ftb"
 local fx_name = "scr_mp_chest_spawn_smoke"
 local fx_scale = 1.0
+lib.locale()
 
 ---------------------------------------------
 -- spawn props
@@ -77,7 +78,7 @@ Citizen.CreateThread(function()
                 {
                     name = 'storage_menu', 
                     icon = 'fas fa-box',
-                    label = 'Storage Options',
+                    label = locale('storage_options'),
                     iconColor = '#4CAF50',
                     onSelect = function()
                         TriggerEvent('rex-storage:client:openStorageMenu', data.id, data.obj)
@@ -103,8 +104,8 @@ RegisterNetEvent('rex-storage:client:adminDeleteMode', function()
     local adminMode = true
     
     lib.notify({
-        title = 'Admin Delete Mode',
-        description = 'Click on a storage box to delete it',
+        title = locale('admin_delete_mode'),
+        description = locale('admin_delete_desc'),
         type = 'inform',
         duration = 5000
     })
@@ -117,17 +118,17 @@ RegisterNetEvent('rex-storage:client:adminDeleteMode', function()
             {
                 name = 'admin_delete_storage',
                 icon = 'fas fa-trash',
-                label = '[ADMIN] Delete Storage',
+                label = locale('admin_delete_storage'),
                 iconColor = '#ff0000',
                 onSelect = function()
                     local alert = lib.alertDialog({
-                        header = '⚠️ Admin Delete Storage',
-                        content = 'Are you sure you want to delete this storage box? This action cannot be undone.',
+                        header = locale('admin_delete_confirm_header'),
+                        content = locale('admin_delete_confirm_content'),
                         centered = true,
                         cancel = true,
                         labels = {
-                            confirm = 'Delete',
-                            cancel = 'Cancel'
+                            confirm = locale('delete'),
+                            cancel = locale('cancel')
                         }
                     })
                     
@@ -148,8 +149,8 @@ RegisterNetEvent('rex-storage:client:openStorageMenu', function(storageid, stora
     RSGCore.Functions.TriggerCallback('rex-storage:server:isStorageOwner', function(isOwner, guestList)
         local menuOptions = {
             {
-                title = 'Open Storage',
-                description = 'Access storage contents',
+                title = locale('open_storage'),
+                description = locale('open_storage_desc'),
                 icon = 'box-open',
                 iconColor = '#4CAF50',
                 onSelect = function()
@@ -160,8 +161,8 @@ RegisterNetEvent('rex-storage:client:openStorageMenu', function(storageid, stora
         
         if isOwner then
             table.insert(menuOptions, {
-                title = 'Manage Guests',
-                description = 'Add or remove guest access',
+                title = locale('manage_guests'),
+                description = locale('manage_guests_desc'),
                 icon = 'users',
                 iconColor = '#2196F3',
                 onSelect = function()
@@ -170,8 +171,8 @@ RegisterNetEvent('rex-storage:client:openStorageMenu', function(storageid, stora
             })
             
             table.insert(menuOptions, {
-                title = 'Destroy Storage',
-                description = 'Permanently remove this storage',
+                title = locale('destroy_storage'),
+                description = locale('destroy_storage_desc'),
                 icon = 'trash-alt',
                 iconColor = '#f44336',
                 disabled = isBusy,
@@ -183,7 +184,7 @@ RegisterNetEvent('rex-storage:client:openStorageMenu', function(storageid, stora
         
         lib.registerContext({
             id = 'storage_main_menu',
-            title = 'Storage Box',
+            title = locale('storage_box'),
             options = menuOptions
         })
         
@@ -197,13 +198,13 @@ end)
 RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestList)
     local menuOptions = {
         {
-            title = 'Add Guest',
-            description = 'Grant storage access to a player',
+            title = locale('add_guest'),
+            description = locale('add_guest_desc'),
             icon = 'user-plus',
             iconColor = '#4CAF50',
             onSelect = function()
-                local input = lib.inputDialog('Add Guest', {
-                    {type = 'number', label = 'Player ID', description = 'Enter the player\'s server ID', required = true, min = 1}
+                local input = lib.inputDialog(locale('add_guest_dialog'), {
+                    {type = 'number', label = locale('player_id'), description = locale('player_id_desc'), required = true, min = 1}
                 })
                 
                 if input then
@@ -212,13 +213,13 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
             end
         },
         {
-            title = 'Remove Guest',
-            description = 'Revoke storage access from a player',
+            title = locale('remove_guest'),
+            description = locale('remove_guest_desc'),
             icon = 'user-minus',
             iconColor = '#f44336',
             onSelect = function()
                 if not guestList or #guestList == 0 then
-                    lib.notify({title = 'No Guests', description = 'This storage has no guests', type = 'error', duration = 3000})
+                    lib.notify({title = locale('no_guests'), description = locale('no_guests_desc'), type = 'error', duration = 3000})
                     return
                 end
                 
@@ -226,7 +227,7 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
                 for i, guest in ipairs(guestList) do
                     table.insert(removeOptions, {
                         title = guest.name,
-                        description = 'Remove access for this player',
+                        description = locale('remove_access_desc'),
                         icon = 'user',
                         onSelect = function()
                             TriggerServerEvent('rex-storage:server:removeGuest', storageid, guest.citizenid)
@@ -236,7 +237,7 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
                 
                 lib.registerContext({
                     id = 'remove_guest_menu',
-                    title = 'Remove Guest',
+                    title = locale('remove_guest'),
                     menu = 'guest_management_menu',
                     options = removeOptions
                 })
@@ -245,13 +246,13 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
             end
         },
         {
-            title = 'View Guest List',
-            description = 'See all players with access',
+            title = locale('view_guest_list'),
+            description = locale('view_guest_list_desc'),
             icon = 'list',
             iconColor = '#2196F3',
             onSelect = function()
                 if not guestList or #guestList == 0 then
-                    lib.notify({title = 'No Guests', description = 'This storage has no guests', type = 'inform', duration = 3000})
+                    lib.notify({title = locale('no_guests'), description = locale('no_guests_desc'), type = 'inform', duration = 3000})
                     return
                 end
                 
@@ -259,7 +260,7 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
                 for i, guest in ipairs(guestList) do
                     table.insert(viewOptions, {
                         title = guest.name,
-                        description = 'Guest',
+                        description = locale('guest'),
                         icon = 'user',
                         iconColor = '#4CAF50'
                     })
@@ -267,7 +268,7 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
                 
                 lib.registerContext({
                     id = 'view_guests_menu',
-                    title = 'Guest List ('..#guestList..')',
+                    title = locale('guest_list')..' ('..#guestList..')',
                     menu = 'guest_management_menu',
                     options = viewOptions
                 })
@@ -279,7 +280,7 @@ RegisterNetEvent('rex-storage:client:manageGuests', function(storageid, guestLis
     
     lib.registerContext({
         id = 'guest_management_menu',
-        title = 'Manage Guests',
+        title = locale('manage_guests'),
         menu = 'storage_main_menu',
         options = menuOptions
     })
@@ -292,19 +293,19 @@ end)
 ---------------------------------------------
 RegisterNetEvent('rex-storage:client:destroystorage', function(storageentity, storageid)
     if isBusy then
-        lib.notify({ title = 'Busy', description = 'Please wait...', type = 'error', duration = 3000 })
+        lib.notify({ title = locale('busy'), description = locale('busy_desc'), type = 'error', duration = 3000 })
         return
     end
     
     -- confirm destroy
     local alert = lib.alertDialog({
-        header = '⚠️ Destroy Storage',
-        content = 'Are you sure you want to destroy this storage? **All contents will be permanently lost!**',
+        header = locale('destroy_storage_confirm_header'),
+        content = locale('destroy_storage_confirm_content'),
         centered = true,
         cancel = true,
         labels = {
-            confirm = 'Destroy',
-            cancel = 'Cancel'
+            confirm = locale('destroy'),
+            cancel = locale('cancel')
         }
     })
 
@@ -324,14 +325,14 @@ RegisterNetEvent('rex-storage:client:destroystorage', function(storageentity, st
         useWhileDead = false,
         canCancel = true,
         disableControl = true,
-        label = 'Dismantling Storage...',
+        label = locale('dismantling_storage'),
     })
     
     ClearPedTasks(cache.ped)
     
     if not success then
         isBusy = false
-        lib.notify({ title = 'Cancelled', description = 'Storage destruction cancelled', type = 'error', duration = 3000 })
+        lib.notify({ title = locale('cancelled'), description = locale('storage_destruction_cancelled'), type = 'error', duration = 3000 })
         return
     end
 
@@ -383,8 +384,8 @@ AddEventHandler('rex-storage:client:placeNewProp', function(proptype, pHash, pos
 
         if result >= Config.MaxStorageBoxes then
             lib.notify({ 
-                title = 'Limit Reached', 
-                description = 'You already have '..Config.MaxStorageBoxes..' storage boxes',
+                title = locale('limit_reached'), 
+                description = locale('limit_reached_desc', Config.MaxStorageBoxes),
                 type = 'error', 
                 duration = 5000 
             })
@@ -398,8 +399,8 @@ AddEventHandler('rex-storage:client:placeNewProp', function(proptype, pHash, pos
             TaskStartScenarioInPlace(cache.ped, anim1, 0, true)
             
             lib.notify({ 
-                title = 'Placing Storage', 
-                description = 'Setting up your storage box...',
+                title = locale('placing_storage'), 
+                description = locale('placing_storage_desc'),
                 type = 'inform', 
                 duration = 3000 
             })
@@ -410,7 +411,7 @@ AddEventHandler('rex-storage:client:placeNewProp', function(proptype, pHash, pos
                 useWhileDead = false,
                 canCancel = true,
                 disableControl = true,
-                label = 'Setting Up Storage...',
+                label = locale('setting_up_storage'),
             })
             
             ClearPedTasks(cache.ped)
@@ -420,13 +421,13 @@ AddEventHandler('rex-storage:client:placeNewProp', function(proptype, pHash, pos
             if success then
                 TriggerServerEvent('rex-storage:server:newProp', proptype, pos, heading, pHash)
             else
-                lib.notify({ title = 'Cancelled', description = 'Storage placement cancelled', type = 'error', duration = 3000 })
+                lib.notify({ title = locale('cancelled'), description = locale('storage_placement_cancelled'), type = 'error', duration = 3000 })
             end
             return
         else
             lib.notify({ 
-                title = 'Invalid Location', 
-                description = 'You cannot place storage here',
+                title = locale('invalid_location'), 
+                description = locale('invalid_location_desc'),
                 type = 'error', 
                 duration = 5000 
             })

@@ -7,6 +7,7 @@ local RotateRightPrompt
 local active = false
 local Props = {}
 local PromptPlacerGroup = GetRandomIntInRange(0, 0xffffff)
+lib.locale()
 
 Citizen.CreateThread(function()
     Set()
@@ -141,7 +142,7 @@ function PropPlacer(proptype, prop)
             DeleteEntity(tempObj2)
             DeleteEntity(tempObj)
             SetModelAsNoLongerNeeded(PropHash)
-            exports['ox_lib']:notify({ title = 'Cancelled', description = 'Storage placement cancelled', type = 'error', duration = 3000 })
+            exports['ox_lib']:notify({ title = locale('cancelled'), description = locale('storage_placement_cancelled'), type = 'error', duration = 3000 })
             active = false
             break
         end

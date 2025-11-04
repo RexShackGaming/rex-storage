@@ -1,10 +1,11 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local PropsLoaded = false
+lib.locale()
 
 ---------------------------------------------
--- create storage command
+-- use storage box item
 ---------------------------------------------
-RSGCore.Commands.Add("createstorage", "creates a player storage", {}, false, function(source)
+RSGCore.Functions.CreateUseableItem('storage_box', function(source, item)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then return end
@@ -16,8 +17,8 @@ RSGCore.Commands.Add("createstorage", "creates a player storage", {}, false, fun
     
     if result >= Config.MaxStorageBoxes then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Storage Limit Reached',
-            description = 'You already have '..Config.MaxStorageBoxes..' storage boxes',
+            title = locale('storage_limit_reached'),
+            description = locale('storage_limit_reached_desc', Config.MaxStorageBoxes),
             type = 'error',
             duration = 5000
         })
@@ -25,12 +26,11 @@ RSGCore.Commands.Add("createstorage", "creates a player storage", {}, false, fun
     end
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Place Storage',
-        description = 'Position your storage and hold to place',
+        title = locale('place_storage'),
+        description = locale('place_storage_desc'),
         type = 'inform',
         duration = 5000
     })
-    
     TriggerClientEvent('rex-storage:client:createstorage', src, 'playerstorage', Config.StorageProp)
 end)
 
@@ -54,8 +54,8 @@ AddEventHandler('rex-storage:server:addGuest', function(storageid, targetId)
     
     if not isOwner then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Access Denied',
-            description = 'You do not own this storage',
+            title = locale('access_denied'),
+            description = locale('access_denied_not_owner'),
             type = 'error',
             duration = 5000
         })
@@ -65,8 +65,8 @@ AddEventHandler('rex-storage:server:addGuest', function(storageid, targetId)
     local TargetPlayer = RSGCore.Functions.GetPlayer(targetId)
     if not TargetPlayer then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Player Not Found',
-            description = 'Player is not online',
+            title = locale('player_not_found'),
+            description = locale('player_not_found_desc'),
             type = 'error',
             duration = 5000
         })
@@ -79,8 +79,8 @@ AddEventHandler('rex-storage:server:addGuest', function(storageid, targetId)
     
     if checkResult and checkResult[1] then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Already Guest',
-            description = 'This player is already a guest',
+            title = locale('already_guest'),
+            description = locale('already_guest_desc'),
             type = 'error',
             duration = 5000
         })
@@ -101,15 +101,15 @@ AddEventHandler('rex-storage:server:addGuest', function(storageid, targetId)
     )
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Guest Added',
-        description = 'Added '..TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname..' as guest',
+        title = locale('guest_added'),
+        description = locale('guest_added_desc', TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname),
         type = 'success',
         duration = 5000
     })
     
     TriggerClientEvent('ox_lib:notify', targetId, {
-        title = 'Storage Access',
-        description = 'You now have access to '..Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname..'\'s storage',
+        title = locale('storage_access'),
+        description = locale('storage_access_desc', Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname),
         type = 'success',
         duration = 5000
     })
@@ -135,8 +135,8 @@ AddEventHandler('rex-storage:server:removeGuest', function(storageid, guestCitiz
     
     if not isOwner then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Access Denied',
-            description = 'You do not own this storage',
+            title = locale('access_denied'),
+            description = locale('access_denied_not_owner'),
             type = 'error',
             duration = 5000
         })
@@ -153,8 +153,8 @@ AddEventHandler('rex-storage:server:removeGuest', function(storageid, guestCitiz
             
             -- Notify guest
             TriggerClientEvent('ox_lib:notify', playerId, {
-                title = 'Storage Access Revoked',
-                description = 'You no longer have access to '..Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname..'\'s storage',
+                title = locale('storage_access_revoked'),
+                description = locale('storage_access_revoked_desc', Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname),
                 type = 'inform',
                 duration = 5000
             })
@@ -176,8 +176,8 @@ AddEventHandler('rex-storage:server:removeGuest', function(storageid, guestCitiz
     )
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Guest Removed',
-        description = 'Removed '..guestName..' from guests',
+        title = locale('guest_removed'),
+        description = locale('guest_removed_desc', guestName),
         type = 'success',
         duration = 5000
     })
@@ -194,8 +194,8 @@ RSGCore.Commands.Add("addstoraguest", "add a guest to your storage", {{name = "i
     local targetId = tonumber(args[1])
     if not targetId then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Invalid Input',
-            description = 'Please provide a valid player ID',
+            title = locale('invalid_input'),
+            description = locale('invalid_input_desc'),
             type = 'error',
             duration = 5000
         })
@@ -205,8 +205,8 @@ RSGCore.Commands.Add("addstoraguest", "add a guest to your storage", {{name = "i
     local TargetPlayer = RSGCore.Functions.GetPlayer(targetId)
     if not TargetPlayer then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Player Not Found',
-            description = 'Player is not online',
+            title = locale('player_not_found'),
+            description = locale('player_not_found_desc'),
             type = 'error',
             duration = 5000
         })
@@ -230,8 +230,8 @@ RSGCore.Commands.Add("addstoraguest", "add a guest to your storage", {{name = "i
     
     if not nearbyStorage then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'No Storage Nearby',
-            description = 'Stand near your storage to add guests',
+            title = locale('no_storage_nearby'),
+            description = locale('no_storage_nearby_desc'),
             type = 'error',
             duration = 5000
         })
@@ -244,8 +244,8 @@ RSGCore.Commands.Add("addstoraguest", "add a guest to your storage", {{name = "i
     
     if checkResult and checkResult[1] then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Already Guest',
-            description = 'This player is already a guest',
+            title = locale('already_guest'),
+            description = locale('already_guest_desc'),
             type = 'error',
             duration = 5000
         })
@@ -257,15 +257,15 @@ RSGCore.Commands.Add("addstoraguest", "add a guest to your storage", {{name = "i
         {nearbyStorage.id, Player.PlayerData.citizenid, TargetPlayer.PlayerData.citizenid})
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Guest Added',
-        description = 'Added '..TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname..' as guest',
+        title = locale('guest_added'),
+        description = locale('guest_added_desc', TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname),
         type = 'success',
         duration = 5000
     })
     
     TriggerClientEvent('ox_lib:notify', targetId, {
-        title = 'Storage Access',
-        description = 'You now have access to '..Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname..'\'s storage',
+        title = locale('storage_access'),
+        description = locale('storage_access_desc', Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname),
         type = 'success',
         duration = 5000
     })
@@ -282,8 +282,8 @@ RSGCore.Commands.Add("admindeletestorage", "Admin: Delete any storage box", {}, 
     -- Check if player is admin
     if not RSGCore.Functions.HasPermission(src, 'admin') then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Access Denied',
-            description = 'You must be an admin to use this command',
+            title = locale('access_denied'),
+            description = locale('admin_required'),
             type = 'error',
             duration = 5000
         })
@@ -291,8 +291,8 @@ RSGCore.Commands.Add("admindeletestorage", "Admin: Delete any storage box", {}, 
     end
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Admin Mode',
-        description = 'Target a storage box to delete it',
+        title = locale('admin_mode'),
+        description = locale('admin_mode_desc'),
         type = 'inform',
         duration = 5000
     })
@@ -312,8 +312,8 @@ AddEventHandler('rex-storage:server:adminDeleteStorage', function(storageid)
     -- Verify admin permission
     if not RSGCore.Functions.HasPermission(src, 'admin') then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Access Denied',
-            description = 'You must be an admin to use this command',
+            title = locale('access_denied'),
+            description = locale('admin_required'),
             type = 'error',
             duration = 5000
         })
@@ -331,8 +331,8 @@ AddEventHandler('rex-storage:server:adminDeleteStorage', function(storageid)
     
     if not ownerCitizenId then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Error',
-            description = 'Storage not found',
+            title = locale('error'),
+            description = locale('storage_not_found'),
             type = 'error',
             duration = 5000
         })
@@ -353,8 +353,8 @@ AddEventHandler('rex-storage:server:adminDeleteStorage', function(storageid)
     
     -- Notify admin
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Storage Deleted',
-        description = 'Storage box has been removed by admin',
+        title = locale('storage_deleted'),
+        description = locale('storage_deleted_desc'),
         type = 'success',
         duration = 5000
     })
@@ -365,8 +365,8 @@ AddEventHandler('rex-storage:server:adminDeleteStorage', function(storageid)
         local OwnerPlayer = RSGCore.Functions.GetPlayer(playerId)
         if OwnerPlayer and OwnerPlayer.PlayerData.citizenid == ownerCitizenId then
             TriggerClientEvent('ox_lib:notify', playerId, {
-                title = 'Storage Removed',
-                description = 'An admin has removed one of your storage boxes',
+                title = locale('storage_removed'),
+                description = locale('storage_removed_desc'),
                 type = 'inform',
                 duration = 7000
             })
@@ -403,8 +403,8 @@ RSGCore.Commands.Add("removestorguest", "remove a guest from your storage", {{na
     local targetId = tonumber(args[1])
     if not targetId then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Invalid Input',
-            description = 'Please provide a valid player ID',
+            title = locale('invalid_input'),
+            description = locale('invalid_input_desc'),
             type = 'error',
             duration = 5000
         })
@@ -414,8 +414,8 @@ RSGCore.Commands.Add("removestorguest", "remove a guest from your storage", {{na
     local TargetPlayer = RSGCore.Functions.GetPlayer(targetId)
     if not TargetPlayer then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'Player Not Found',
-            description = 'Player is not online',
+            title = locale('player_not_found'),
+            description = locale('player_not_found_desc'),
             type = 'error',
             duration = 5000
         })
@@ -439,8 +439,8 @@ RSGCore.Commands.Add("removestorguest", "remove a guest from your storage", {{na
     
     if not nearbyStorage then
         TriggerClientEvent('ox_lib:notify', src, {
-            title = 'No Storage Nearby',
-            description = 'Stand near your storage to remove guests',
+            title = locale('no_storage_nearby'),
+            description = locale('no_storage_nearby_remove_desc'),
             type = 'error',
             duration = 5000
         })
@@ -452,15 +452,15 @@ RSGCore.Commands.Add("removestorguest", "remove a guest from your storage", {{na
         {nearbyStorage.id, Player.PlayerData.citizenid, TargetPlayer.PlayerData.citizenid})
     
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Guest Removed',
-        description = 'Removed '..TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname..' from guests',
+        title = locale('guest_removed'),
+        description = locale('guest_removed_desc', TargetPlayer.PlayerData.charinfo.firstname..' '..TargetPlayer.PlayerData.charinfo.lastname),
         type = 'success',
         duration = 5000
     })
     
     TriggerClientEvent('ox_lib:notify', targetId, {
-        title = 'Storage Access Revoked',
-        description = 'You no longer have access to '..Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname..'\'s storage',
+        title = locale('storage_access_revoked'),
+        description = locale('storage_access_revoked_desc', Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname),
         type = 'inform',
         duration = 5000
     })
@@ -613,8 +613,8 @@ AddEventHandler('rex-storage:server:saveProp', function(data, propId, citizenid,
             local Player = RSGCore.Functions.GetPlayer(playerId)
             if Player and Player.PlayerData.citizenid == citizenid then
                 TriggerClientEvent('ox_lib:notify', playerId, {
-                    title = 'Storage Created',
-                    description = 'Your storage has been placed successfully',
+                    title = locale('storage_created'),
+                    description = locale('storage_created_desc'),
                     type = 'success',
                     duration = 4000
                 })
@@ -664,6 +664,11 @@ AddEventHandler('rex-storage:server:newProp', function(proptype, location, headi
     TriggerEvent('rex-storage:server:saveProp', PropData, propId, citizenid, proptype)
     TriggerEvent('rex-storage:server:updateProps')
     
+    -- Remove the storage_box item from inventory
+    if Player.Functions.RemoveItem('storage_box', 1) then
+        TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items['storage_box'], 'remove', 1)
+    end
+    
     -- Discord Log
     local steamid = GetPlayerIdentifierByType(src, 'steam') or 'Unknown'
     DiscordLog_StorageCreated(
@@ -701,7 +706,7 @@ AddEventHandler('rex-storage:server:destroyProp', function(propid, item)
     end
 
     if not canDestroy then
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Access Denied', description = 'You do not own this storage', type = 'error', duration = 5000})
+        TriggerClientEvent('ox_lib:notify', src, {title = locale('access_denied'), description = locale('access_denied_not_owner'), type = 'error', duration = 5000})
         return
     end
 
@@ -714,9 +719,13 @@ AddEventHandler('rex-storage:server:destroyProp', function(propid, item)
     local storageName = 'storage'..tostring(propid)
     TriggerEvent('rsg-inventory:server:ClearInventory', storageName)
 
+    -- Return the storage_box item to the player's inventory
+    Player.Functions.AddItem('storage_box', 1)
+    TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items['storage_box'], 'add', 1)
+
     TriggerClientEvent('ox_lib:notify', src, {
-        title = 'Storage Destroyed',
-        description = 'Your storage and its contents have been removed',
+        title = locale('storage_destroyed'),
+        description = locale('storage_destroyed_desc'),
         type = 'success',
         duration = 4000
     })
@@ -853,7 +862,7 @@ RegisterNetEvent('rex-storage:server:openstorage', function(storageid)
     end
     
     if not hasAccess then
-        TriggerClientEvent('ox_lib:notify', src, {title = 'Access Denied', description = 'You do not have access to this storage', type = 'error', duration = 5000})
+        TriggerClientEvent('ox_lib:notify', src, {title = locale('access_denied'), description = locale('access_denied_no_access'), type = 'error', duration = 5000})
         return
     end
     
