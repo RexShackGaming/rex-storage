@@ -693,11 +693,12 @@ AddEventHandler('rex-storage:server:destroyProp', function(propid, item)
     local citizenid = Player.PlayerData.citizenid
     local canDestroy = false
     local propIndex = nil
+    local isAdmin = RSGCore.Functions.HasPermission(src, 'admin')
 
-    -- Validate ownership before destroying
+    -- Validate ownership before destroying (or allow if admin)
     for k, v in pairs(Config.PlayerProps) do
         if v.id == propid then
-            if v.builder == citizenid then
+            if v.builder == citizenid or isAdmin then
                 canDestroy = true
                 propIndex = k
                 break
