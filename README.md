@@ -433,24 +433,21 @@ files {
 3. Check specific `logEvents` settings
 4. Test webhook with curl/Postman
 
-## Support
-
-For issues, suggestions, or contributions:
-- Check existing issues on the repository
-- Provide console logs and reproduction steps
-- Include server framework version (RSG Core)
-- Mention any modified configuration
-
 ## Credits
 
 - **Framework:** RSG Core
 - **Libraries:** ox_lib, oxmysql, ox_target
 - **Developer:** RexshackGaming
 
+## Support
+
+- [RSG Discord](https://discord.gg/eW3ADkf4Af)
+
 ## License
 
-Please check the repository for license information.
+This project is licensed under the terms specified in the LICENSE file.
 
 ---
 
-**Note:** This documentation is for REX Storage v2.0.0. Features and configurations may vary in different versions.
+**Author:** RexShack
+**Support Me:** [Buy me a Beer](https://buymeacoffee.com/rexshack)
